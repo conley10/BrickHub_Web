@@ -98,8 +98,13 @@ const Minifigures = () => {
     }
 
     return filtered;
-  }, [searchTerm, selectedCondition, selectedSeries, sortOption]);
-
+}, [
+  minifiguresData,
+  searchTerm,
+  selectedCondition,
+  selectedSeries,
+  sortOption,
+]);
   // Reset to page 1 whenever the filters change. Adjusting state during
   // render (rather than in a useEffect) avoids an extra render pass.
   const filterKey = `${searchTerm}|${selectedCondition}|${selectedSeries}|${sortOption}`;

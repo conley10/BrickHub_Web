@@ -92,7 +92,13 @@ const Sets = () => {
     }
 
     return filtered;
-  }, [searchTerm, selectedCondition, selectedTheme, sortOption]);
+}, [
+  setsData,
+  searchTerm,
+  selectedCondition,
+  selectedTheme,
+  sortOption,
+]);
 
   // Reset to page 1 whenever the filters change. Adjusting state during
   // render (rather than in a useEffect) avoids an extra render pass.

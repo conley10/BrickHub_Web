@@ -8,7 +8,7 @@ import { rateLimit } from "express-rate-limit";
 dotenv.config();
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Escape user-supplied text before it goes into HTML emails, to prevent
 // HTML/script injection into the emails we send.
@@ -611,6 +611,6 @@ app.get("/api/admin/requests", searchLimiter, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });

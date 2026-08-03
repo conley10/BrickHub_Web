@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import SetsCard from "../components/SetsCard";
 import Footer from "../components/Footer";
@@ -46,59 +46,63 @@ const Sets = () => {
 
   const themeFilters = ["All", ...new Set(setsData.map((set) => set.theme))];
 
-  const filteredSets = useMemo(() => {
-    let filtered = [...setsData];
+const filteredSets = (() => {
+  let filtered = [...setsData];
 
-    if (searchTerm.trim()) {
-      const lowerSearch = searchTerm.toLowerCase();
+  if (searchTerm.trim()) {
+    const lowerSearch = searchTerm.toLowerCase();
 
-      filtered = filtered.filter(
-        (set) =>
-          set.name.toLowerCase().includes(lowerSearch) ||
-          set.theme.toLowerCase().includes(lowerSearch) ||
-          (set.sku && set.sku.toLowerCase().includes(lowerSearch))
-      );
-    }
+    filtered = filtered.filter(
+      (set) =>
+        set.name?.toLowerCase().includes(lowerSearch) ||
+        set.theme?.toLowerCase().includes(lowerSearch) ||
+        set.sku?.toLowerCase().includes(lowerSearch)
+    );
+  }
 
-    if (selectedCondition !== "All") {
-      filtered = filtered.filter((set) => set.condition === selectedCondition);
-    }
+  if (selectedCondition !== "All") {
+    filtered = filtered.filter(
+      (set) => set.condition === selectedCondition
+    );
+  }
 
-    if (selectedTheme !== "All") {
-      filtered = filtered.filter((set) => set.theme === selectedTheme);
-    }
+  if (selectedTheme !== "All") {
+    filtered = filtered.filter(
+      (set) => set.theme === selectedTheme
+    );
+  }
 
-    switch (sortOption) {
-      case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "name-asc":
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-desc":
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "stock-high":
-        filtered.sort((a, b) => b.stock - a.stock);
-        break;
-      case "stock-low":
-        filtered.sort((a, b) => a.stock - b.stock);
-        break;
-      default:
-        break;
-    }
+  switch (sortOption) {
+    case "price-high":
+      filtered.sort((a, b) => Number(b.price) - Number(a.price));
+      break;
 
-    return filtered;
-}, [
-  setsData,
-  searchTerm,
-  selectedCondition,
-  selectedTheme,
-  sortOption,
-]);
+    case "price-low":
+      filtered.sort((a, b) => Number(a.price) - Number(b.price));
+      break;
+
+    case "name-asc":
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+
+    case "name-desc":
+      filtered.sort((a, b) => b.name.localeCompare(a.name));
+      break;
+
+    case "stock-high":
+      filtered.sort((a, b) => Number(b.stock) - Number(a.stock));
+      break;
+
+    case "stock-low":
+      filtered.sort((a, b) => Number(a.stock) - Number(b.stock));
+      break;
+
+    default:
+      break;
+  }
+
+  return filtered;
+})();
 
   // Reset to page 1 whenever the filters change. Adjusting state during
   // render (rather than in a useEffect) avoids an extra render pass.

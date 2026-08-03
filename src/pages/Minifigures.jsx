@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import MinifigureCard from "../components/MinifigureCard";
 import Footer from "../components/Footer";
@@ -49,62 +49,63 @@ const Minifigures = () => {
     ...new Set(minifiguresData.map((figure) => figure.series)),
   ];
 
-  const filteredMinifigures = useMemo(() => {
-    let filtered = [...minifiguresData];
+const filteredMinifigures = (() => {
+  let filtered = [...minifiguresData];
 
-    if (searchTerm.trim()) {
-      const lowerSearch = searchTerm.toLowerCase();
+  if (searchTerm.trim()) {
+    const lowerSearch = searchTerm.toLowerCase();
 
-      filtered = filtered.filter((figure) => {
-        return (
-          figure.name.toLowerCase().includes(lowerSearch) ||
-          figure.series.toLowerCase().includes(lowerSearch) ||
-          figure.sku.toLowerCase().includes(lowerSearch)
-        );
-      });
-    }
+    filtered = filtered.filter(
+      (figure) =>
+        figure.name?.toLowerCase().includes(lowerSearch) ||
+        figure.series?.toLowerCase().includes(lowerSearch) ||
+        figure.sku?.toLowerCase().includes(lowerSearch)
+    );
+  }
 
-    if (selectedCondition !== "All") {
-      filtered = filtered.filter(
-        (figure) => figure.condition === selectedCondition
-      );
-    }
+  if (selectedCondition !== "All") {
+    filtered = filtered.filter(
+      (figure) => figure.condition === selectedCondition
+    );
+  }
 
-    if (selectedSeries !== "All") {
-      filtered = filtered.filter((figure) => figure.series === selectedSeries);
-    }
+  if (selectedSeries !== "All") {
+    filtered = filtered.filter(
+      (figure) => figure.series === selectedSeries
+    );
+  }
 
-    switch (sortOption) {
-      case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "name-asc":
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-desc":
-        filtered.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "stock-high":
-        filtered.sort((a, b) => b.stock - a.stock);
-        break;
-      case "stock-low":
-        filtered.sort((a, b) => a.stock - b.stock);
-        break;
-      default:
-        break;
-    }
+  switch (sortOption) {
+    case "price-high":
+      filtered.sort((a, b) => Number(b.price) - Number(a.price));
+      break;
 
-    return filtered;
-}, [
-  minifiguresData,
-  searchTerm,
-  selectedCondition,
-  selectedSeries,
-  sortOption,
-]);
+    case "price-low":
+      filtered.sort((a, b) => Number(a.price) - Number(b.price));
+      break;
+
+    case "name-asc":
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+
+    case "name-desc":
+      filtered.sort((a, b) => b.name.localeCompare(a.name));
+      break;
+
+    case "stock-high":
+      filtered.sort((a, b) => Number(b.stock) - Number(a.stock));
+      break;
+
+    case "stock-low":
+      filtered.sort((a, b) => Number(a.stock) - Number(b.stock));
+      break;
+
+    default:
+      break;
+  }
+
+  return filtered;
+})();
   // Reset to page 1 whenever the filters change. Adjusting state during
   // render (rather than in a useEffect) avoids an extra render pass.
   const filterKey = `${searchTerm}|${selectedCondition}|${selectedSeries}|${sortOption}`;
